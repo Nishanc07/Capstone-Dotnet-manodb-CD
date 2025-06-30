@@ -20,6 +20,7 @@ spec:
         app: dotnet-noteapp
       annotations:
         vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/agent-inject-token: "true"
         vault.hashicorp.com/role: "noteapp"
         vault.hashicorp.com/agent-inject-secret-mongodb__connectionstring: "secret/data/noteapp"
         vault.hashicorp.com/agent-inject-template-mongodb__connectionstring: |
@@ -30,7 +31,7 @@ spec:
       serviceAccountName: noteapp-sa
       containers:
         - name: dotnet-noteapp
-          image: adijaiswal/noteapp:v6
+          image: nishanc7/noteapp:v6
           ports:
             - containerPort: 5050
           env:
@@ -49,4 +50,3 @@ spec:
     - port: 80
       targetPort: 5050
   type: ClusterIP
-
