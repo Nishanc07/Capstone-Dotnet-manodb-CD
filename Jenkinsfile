@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Git Checkout') {
             steps {
-                git branch: 'main', credentialsId: 'git-token', url: 'https://github.com/jaiswaladi246/Capstone-DotNET-Mongo-CD.git'
+                git branch: 'main', credentialsId: 'git-token', url: 'https://github.com/nishanc07/Capstone-DotNET-Mongodb-CD.git'
             }
         }
         
