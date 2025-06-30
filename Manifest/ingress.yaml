@@ -2,15 +2,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: noteapp-ingress
+  namespace: webapps  
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   ingressClassName: nginx
   rules:
-    - host: www.adityajaiswal.com
+    - host: noteapp.128.251.117.189.nip.io
       http:
         paths:
           - path: /
@@ -20,18 +19,3 @@ spec:
                 name: dotnet-noteapp
                 port:
                   number: 80
-    - host: adityajaiswal.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: dotnet-noteapp
-                port:
-                  number: 80
-  tls:
-    - hosts:
-        - www.adityajaiswal.com
-        - adityajaiswal.com
-      secretName: adityajaiswal-co-tls
