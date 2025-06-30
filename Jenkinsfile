@@ -4,19 +4,28 @@ pipeline {
     stages {
         stage('Git Checkout') {
             steps {
-                git branch: 'main', credentialsId: 'git-token', url: 'https://github.com/nishanc07/Capstone-DotNET-Mongodb-CD.git'
+               git branch: 'main', credentialsId: 'git-token', url: 'https://github.com/Nishanc07/Capstone-Dotnet-manodb-CD.git'
             }
         }
         
         stage('Deploy To Kubernetes') {
             steps {
                 script {
-                    withKubeConfig(credentialsId: 'aks-kubeconfig', namespace: 'webapps') {
-                        sh 'kubectl apply -f Manifest/manifest.yaml -n webapps'
-                        sh 'kubectl apply -f Manifest/ci.yaml -n webapps'
-                        sh 'kubectl apply -f Manifest/ingress.yaml -n webapps'
-                        sleep 30
-                    }
+                    withKubeConfig(
+  caCertificate: '',
+  clusterName: 'azure-aks',
+  contextName: '',
+  credentialsId: 'k8s-token',
+  namespace: 'webapps',
+  restrictKubeConfigAccess: false,
+  serverUrl: 'https://xyz-v73qd8ss.hcp.northeurope.azmk8s.io'
+) {
+    sh 'kubectl apply --validate=false -f Manifest/manifest.yaml -n webapps'
+    sh 'kubectl apply --validate=false -f Manifest/ci.yaml -n webapps'
+    sh 'kubectl apply --validate=false -f Manifest/ingress.yaml -n webapps'
+    sleep 30
+}
+
                 }
             }
         }
@@ -24,7 +33,15 @@ pipeline {
         stage('Verify The Deployment') {
             steps {
                 script {
-                    withKubeConfig(credentialsId: 'aks-kubeconfig', namespace: 'webapps') {
+                      withKubeConfig(
+  caCertificate: '',
+  clusterName: 'azure-aks',
+  contextName: '',
+  credentialsId: 'k8s-token',
+  namespace: 'webapps',
+  restrictKubeConfigAccess: false,
+  serverUrl: 'https://xyz-v73qd8ss.hcp.northeurope.azmk8s.io'
+){
                         sh 'kubectl get pods -n webapps'
                         sh 'kubectl get svc -n webapps'
                         sh 'kubectl get ingress -n webapps'
@@ -60,7 +77,7 @@ pipeline {
                 emailext (
                     subject: "${jobName} - Build ${buildNumber} - ${pipelineStatus.toUpperCase()}",
                     body: body,
-                    to: 'nishanarayan604.com',
+                    to: 'nishanarayan604@gmail.com',
                     from: 'nishanc604@gmail.com',
                     replyTo: 'jenkins@nishanc.com',
                     mimeType: 'text/html'
@@ -68,8 +85,6 @@ pipeline {
             }
         }
     }
-}
-
 }
 
 
